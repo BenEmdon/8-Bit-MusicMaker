@@ -8,7 +8,7 @@
 /// - G: Sol
 /// - A: La
 /// - B: Ti
-public enum Note: Double {
+public enum Note: Float {
 	case C = 0
 	case D = 10
 	case E = 20
