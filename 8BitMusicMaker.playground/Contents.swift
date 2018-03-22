@@ -32,7 +32,7 @@ enum Instrument: String {
 /// - B: Ti
 public enum Note: Float {
 	case C = 0
-	case D = 10
+	case D = 10 // notes need adjustment
 	case E = 20
 	case F = 25
 	case G = 35
