@@ -15,7 +15,7 @@ enum Instrument: String {
 	case noise
 
 	var sample: AVAudioFile {
-		let url = Bundle.main.url(forResource: "8-bit-" + rawValue, withExtension: "mp3")!
+		let url = Bundle.main.url(forResource: "8-bit-" + rawValue, withExtension: "m4a")!
 		return try! AVAudioFile(forReading: url)
 	}
 }
@@ -32,12 +32,16 @@ enum Instrument: String {
 /// - B: Ti
 public enum Note: Float {
 	case C = 0
-	case D = 10 // notes need adjustment
+	case D = 10
 	case E = 20
 	case F = 25
 	case G = 35
 	case A = 45
 	case B = 55
+
+	var pitchModifier: Float {
+		return self.rawValue * 20
+	}
 }
 
 class PitchModifier {
@@ -67,7 +71,8 @@ class PitchModifier {
 }
 
 class View: UIView {
-	let pitchModifier = PitchModifier(sample: Instrument.square.sample)
+	let pitchModifier1 = PitchModifier(sample: Instrument.square.sample)
+	let pitchModifier2 = PitchModifier(sample: Instrument.square.sample)
 	override init(frame: CGRect) {
 		super.init(frame: frame)
 	}
@@ -79,4 +84,8 @@ class View: UIView {
 
 let view = View(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
 PlaygroundPage.current.liveView = view
-view.pitchModifier.start()
+view.pitchModifier1.timePitchEffect.pitch = Note.B.pitchModifier
+view.pitchModifier2.timePitchEffect.pitch = Note.C.pitchModifier
+//view.pitchModifier1.start()
+//view.pitchModifier2.start()
+
