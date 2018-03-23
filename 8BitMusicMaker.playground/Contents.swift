@@ -49,9 +49,10 @@ class PitchModifier {
 	let engine = AVAudioEngine()
 	let player = AVAudioPlayerNode()
 	let timePitchEffect = AVAudioUnitTimePitch()
+	let audioBuffer: AVAudioPCMBuffer
 
 	init(sample: AVAudioFile) {
-		let audioBuffer = AVAudioPCMBuffer(pcmFormat: sample.processingFormat, frameCapacity: UInt32(sample.length))!
+		audioBuffer = AVAudioPCMBuffer(pcmFormat: sample.processingFormat, frameCapacity: UInt32(sample.length))!
 		try! sample.read(into: audioBuffer)
 
 		engine.attach(player)
@@ -59,14 +60,20 @@ class PitchModifier {
 
 		engine.connect(player, to: timePitchEffect, format: audioBuffer.format)
 		engine.connect(timePitchEffect, to: engine.mainMixerNode, format: audioBuffer.format)
-
-		player.scheduleBuffer(audioBuffer, at: nil, options: .loops)
 	}
 
 	func start() {
 		engine.prepare()
 		try! engine.start()
+	}
+
+	func play() {
+		player.scheduleBuffer(audioBuffer, at: nil, options: .loops)
 		player.play()
+	}
+
+	func stop() {
+		player.stop()
 	}
 }
 
@@ -86,6 +93,15 @@ let view = View(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
 PlaygroundPage.current.liveView = view
 view.pitchModifier1.timePitchEffect.pitch = Note.B.pitchModifier
 view.pitchModifier2.timePitchEffect.pitch = Note.C.pitchModifier
-//view.pitchModifier1.start()
-//view.pitchModifier2.start()
+view.pitchModifier1.start()
+view.pitchModifier2.start()
+
+//view.pitchModifier1.play()
+//DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+//	view.pitchModifier1.stop()
+//}
+//
+//DispatchQueue.main.asyncAfter(deadline: .now() + 6) {
+//	view.pitchModifier1.play()
+//}
 
