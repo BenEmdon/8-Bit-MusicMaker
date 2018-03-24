@@ -16,6 +16,7 @@ public enum Note: Float {
 	case G = 35
 	case A = 45
 	case B = 55
+	case C2 = 60
 
 	/// The `pitchModifier` is the amount by which the input signal (C note) is modified.
 	public var pitchModifier: Float {
@@ -32,6 +33,7 @@ public enum Note: Float {
 			.G,
 			.A,
 			.B,
+			.C2,
 		]
 	}
 }
