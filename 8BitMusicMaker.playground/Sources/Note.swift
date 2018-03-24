@@ -9,14 +9,14 @@
 /// - A: La
 /// - B: Ti
 public enum Note: Float {
-	case C = 0
+	case C2 = 0
 	case D = 10
 	case E = 20
 	case F = 25
 	case G = 35
 	case A = 45
 	case B = 55
-	case C2 = 60
+	case C3 = 60
 
 	/// The `pitchModifier` is the amount by which the input signal (C note) is modified.
 	public var pitchModifier: Float {
@@ -26,14 +26,14 @@ public enum Note: Float {
 	/// An array of all the cases.
 	public static var allValues: [Note] {
 		return [
-			.C,
+			.C2,
 			.D,
 			.E,
 			.F,
 			.G,
 			.A,
 			.B,
-			.C2,
+			.C3,
 		]
 	}
 }

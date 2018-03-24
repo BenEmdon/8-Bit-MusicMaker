@@ -31,7 +31,7 @@ class Sequencer {
 	}
 
 	// Constants
-	let blocks = 12
+	let blocks = 14
 
 //	let blocksPerSecond: DispatchTime = 0.5
 
@@ -107,7 +107,7 @@ class Sequencer {
 		guard currentMode == .playing else { return }
 		delegate?.blockChanged(newBlock)
 		playNotesForBlock(newBlock)
-		DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
 			guard let blocks = self?.blocks else { return }
 			let allButLastBlock = 0..<(blocks - 1)
 			if allButLastBlock.contains(newBlock) {
@@ -152,20 +152,38 @@ class Sequencer {
 }
 
 class View: UIView {
-	let sequencer = Sequencer(with: [.square], initialState: [
+	let sequencer = Sequencer(with: [.square, .noise], initialState: [
 		.square: [
-			NoteAtBlock(note: .C, block: 0),
+			NoteAtBlock(note: .C2, block: 0),
 			NoteAtBlock(note: .D, block: 1),
 			NoteAtBlock(note: .E, block: 2),
 			NoteAtBlock(note: .F, block: 3),
 			NoteAtBlock(note: .G, block: 4),
 			NoteAtBlock(note: .A, block: 5),
 			NoteAtBlock(note: .B, block: 6),
-			NoteAtBlock(note: .A, block: 7),
-			NoteAtBlock(note: .G, block: 8),
-			NoteAtBlock(note: .F, block: 9),
-			NoteAtBlock(note: .E, block: 10),
-			NoteAtBlock(note: .D, block: 11),
+			NoteAtBlock(note: .C3, block: 7),
+			NoteAtBlock(note: .B, block: 8),
+			NoteAtBlock(note: .A, block: 9),
+			NoteAtBlock(note: .G, block: 10),
+			NoteAtBlock(note: .F, block: 11),
+			NoteAtBlock(note: .E, block: 12),
+			NoteAtBlock(note: .D, block: 13),
+		],
+		.noise: [
+			NoteAtBlock(note: .C2, block: 0),
+			NoteAtBlock(note: .D, block: 1),
+			NoteAtBlock(note: .E, block: 2),
+			NoteAtBlock(note: .F, block: 3),
+			NoteAtBlock(note: .G, block: 4),
+			NoteAtBlock(note: .A, block: 5),
+			NoteAtBlock(note: .B, block: 6),
+			NoteAtBlock(note: .C3, block: 7),
+			NoteAtBlock(note: .B, block: 8),
+			NoteAtBlock(note: .A, block: 9),
+			NoteAtBlock(note: .G, block: 10),
+			NoteAtBlock(note: .F, block: 11),
+			NoteAtBlock(note: .E, block: 12),
+			NoteAtBlock(note: .D, block: 13),
 		]
 	])
 	override init(frame: CGRect) {
@@ -181,3 +199,4 @@ let view = View(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
 PlaygroundPage.current.liveView = view
 view.sequencer.prepareForPlaying()
 view.sequencer.start()
+
