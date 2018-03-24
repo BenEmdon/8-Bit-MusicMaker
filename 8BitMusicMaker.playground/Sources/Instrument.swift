@@ -7,13 +7,13 @@ import AVFoundation
 /// - square: square wave form.
 /// - triangle: traingle wave from.
 /// - noise: noisy wave. Imagine a ragged mountain surface.
-enum Instrument: String {
+public enum Instrument: String {
 	case square
 	case triangle
 	case noise
 
-	var sample: AVAudioFile {
-		let url = Bundle.main.url(forResource: "8-bit-" + rawValue, withExtension: "mp3")!
+	public var sample: AVAudioFile {
+		let url = Bundle.main.url(forResource: "8-bit-" + rawValue, withExtension: "m4a")!
 		return try! AVAudioFile(forReading: url)
 	}
 }
