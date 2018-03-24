@@ -17,10 +17,12 @@ public enum Note: Float {
 	case A = 45
 	case B = 55
 
+	/// The `pitchModifier` is the amount by which the input signal (C note) is modified.
 	public var pitchModifier: Float {
 		return self.rawValue * 20
 	}
 
+	/// An array of all the cases.
 	public static var allValues: [Note] {
 		return [
 			.C,
