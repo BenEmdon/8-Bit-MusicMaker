@@ -111,3 +111,7 @@ DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
 DispatchQueue.main.asyncAfter(deadline: .now() + 6) {
 	view.sequencer.stopNote(.A, onInstrument: .square)
 }
+
+DispatchQueue.main.asyncAfter(deadline: .now() + 9) {
+	view.sequencer.playNote(.A, onInstrument: .square)
+}
