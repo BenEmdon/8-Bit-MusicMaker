@@ -16,4 +16,20 @@ public enum Note: Float {
 	case G = 35
 	case A = 45
 	case B = 55
+
+	public var pitchModifier: Float {
+		return self.rawValue * 20
+	}
+
+	public static var allValues: [Note] {
+		return [
+			.C,
+			.D,
+			.E,
+			.F,
+			.G,
+			.A,
+			.B,
+		]
+	}
 }
