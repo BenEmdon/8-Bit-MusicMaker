@@ -3,63 +3,42 @@ import UIKit
 import Foundation
 import AVFoundation
 
-/// Each instriment is a sample of a different 8-bit wave form.
-/// All samples are each wave form as a C2 note.
-///
-/// - square: square wave form.
-/// - triangle: traingle wave from.
-/// - noise: noisy wave. Imagine a ragged mountain surface.
-enum Instrument: String {
-	case square
-	case triangle
-	case noise
+struct NoteAtBlock {
+	let note: Note
+	let block: Int
+}
 
-	var sample: AVAudioFile {
-		let url = Bundle.main.url(forResource: "8-bit-" + rawValue, withExtension: "m4a")!
-		return try! AVAudioFile(forReading: url)
+extension NoteAtBlock: Hashable {
+	static func ==(lhs: NoteAtBlock, rhs: NoteAtBlock) -> Bool {
+		return lhs.block == rhs.block
+			&& lhs.note == rhs.note
+	}
+	var hashValue: Int {
+		return "\(note.rawValue).\(block)".hashValue
 	}
 }
 
-/// An enum that defines each notes pitch relative to the note C.
-/// This assumes that the provided sound assets are a C note.
-///
-/// - C: Do
-/// - D: Re
-/// - E: Mi
-/// - F: Fa
-/// - G: Sol
-/// - A: La
-/// - B: Ti
-public enum Note: Float {
-	case C = 0
-	case D = 10
-	case E = 20
-	case F = 25
-	case G = 35
-	case A = 45
-	case B = 55
+protocol SequencerDelegate: class {}
 
-	var pitchModifier: Float {
-		return self.rawValue * 20
-	}
-}
+class Sequencer {
 
-class PitchModifier {
+	// constants
+	let blocks = 12
 
+	// AVFoundation dependancies
 	let engine = AVAudioEngine()
-	let player = AVAudioPlayerNode()
-	let timePitchEffect = AVAudioUnitTimePitch()
-	let audioBuffer: AVAudioPCMBuffer
 
-	init(sample: AVAudioFile) {
-		audioBuffer = AVAudioPCMBuffer(pcmFormat: sample.processingFormat, frameCapacity: UInt32(sample.length))!
-		try! sample.read(into: audioBuffer)
+	// Irganized state of the sequencer
+	let buffers: [Instrument: AVAudioPCMBuffer]
+	let players: [Instrument: [Note: PitchedPlayer]]
+	var notesAtBlocks: [Instrument: Set<NoteAtBlock>]
 
-		engine.attach(player)
-		engine.attach(timePitchEffect)
+	weak var delegate: SequencerDelegate?
 
-		engine.connect(player, to: timePitchEffect, format: audioBuffer.format)
-		engine.connect(timePitchEffect, to: engine.mainMixerNode, format: audioBuffer.format)
+	init(with instruments: [Instrument], initialState state: [Instrument: Set<NoteAtBlock>] = [:]) {
+		buffers = Sequencer.audioBuffers(for: instruments)
+		players = Sequencer.createPlayers(forBuffers: buffers, engine: engine)
+		notesAtBlocks = state
 	}
 
 	func start() {
@@ -67,19 +46,50 @@ class PitchModifier {
 		try! engine.start()
 	}
 
-	func play() {
-		player.scheduleBuffer(audioBuffer, at: nil, options: .loops)
-		player.play()
+	private static func audioBuffers(for instruments: [Instrument]) -> [Instrument: AVAudioPCMBuffer] {
+		var audioBuffers = [Instrument: AVAudioPCMBuffer]()
+		for instrument in instruments {
+			let sample = instrument.sample
+			let audioBuffer = AVAudioPCMBuffer(pcmFormat: sample.processingFormat, frameCapacity: UInt32(sample.length))!
+			try! sample.read(into: audioBuffer)
+			audioBuffers[instrument] = audioBuffer
+		}
+		return audioBuffers
 	}
 
-	func stop() {
-		player.stop()
+	private static func createPlayers(forBuffers buffers: [Instrument: AVAudioPCMBuffer], engine: AVAudioEngine) -> [Instrument: [Note: PitchedPlayer]] {
+		var allPlayers = [Instrument: [Note: PitchedPlayer]]()
+		let instruments = buffers.map { instrument, _ in return instrument }
+		for instrument in instruments {
+			var notePlayers = [Note: PitchedPlayer]()
+			for note in Note.allValues {
+				notePlayers[note] = PitchedPlayer(engine: engine, audioBuffer: buffers[instrument]!, note: note)
+			}
+			allPlayers[instrument] = notePlayers
+		}
+		return allPlayers
+	}
+
+	func registerNote(_ note: Note, onInstrument instrument: Instrument, forBlock block: Int) {
+	}
+
+	func playNote(_ note: Note, onInstrument instrument: Instrument) {
+		// simple play a note
+		if let player = players[instrument]?[note] {
+			player.play()
+		}
+	}
+
+	func stopNote(_ note: Note, onInstrument instrument: Instrument) {
+		// simple play a note
+		if let player = players[instrument]?[note] {
+			player.stop()
+		}
 	}
 }
 
 class View: UIView {
-	let pitchModifier1 = PitchModifier(sample: Instrument.square.sample)
-	let pitchModifier2 = PitchModifier(sample: Instrument.square.sample)
+	let sequencer = Sequencer(with: [.square])
 	override init(frame: CGRect) {
 		super.init(frame: frame)
 	}
@@ -91,17 +101,14 @@ class View: UIView {
 
 let view = View(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
 PlaygroundPage.current.liveView = view
-view.pitchModifier1.timePitchEffect.pitch = Note.B.pitchModifier
-view.pitchModifier2.timePitchEffect.pitch = Note.C.pitchModifier
-view.pitchModifier1.start()
-view.pitchModifier2.start()
+view.sequencer.start()
+view.sequencer.playNote(.A, onInstrument: .square)
 
-//view.pitchModifier1.play()
-//DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-//	view.pitchModifier1.stop()
-//}
-//
-//DispatchQueue.main.asyncAfter(deadline: .now() + 6) {
-//	view.pitchModifier1.play()
-//}
+DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+	view.sequencer.playNote(.C, onInstrument: .square)
+	view.sequencer.playNote(.E, onInstrument: .square)
+}
 
+DispatchQueue.main.asyncAfter(deadline: .now() + 6) {
+	view.sequencer.stopNote(.A, onInstrument: .square)
+}
