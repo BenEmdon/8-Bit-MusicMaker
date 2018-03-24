@@ -28,15 +28,14 @@ class Sequencer {
 	// AVFoundation dependancies
 	let engine = AVAudioEngine()
 
-	// Irganized state of the sequencer
-	let buffers: [Instrument: AVAudioPCMBuffer]
+	// Organized state of the sequencer
 	let players: [Instrument: [Note: PitchedPlayer]]
 	var notesAtBlocks: [Instrument: Set<NoteAtBlock>]
 
 	weak var delegate: SequencerDelegate?
 
 	init(with instruments: [Instrument], initialState state: [Instrument: Set<NoteAtBlock>] = [:]) {
-		buffers = Sequencer.audioBuffers(for: instruments)
+		let buffers = Sequencer.audioBuffers(for: instruments)
 		players = Sequencer.createPlayers(forBuffers: buffers, engine: engine)
 		notesAtBlocks = state
 	}
