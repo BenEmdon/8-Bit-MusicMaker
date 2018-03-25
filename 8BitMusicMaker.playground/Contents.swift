@@ -5,7 +5,7 @@ class BitMusicMaker: UIView {
 	let sequencer: Sequencer
 	let blocks: Int
 	let instriments: [Instrument]
-	let sequencerViews: [SequenceView]
+	let sequencerViews: [Instrument: SequencerView]
 
 	init(with instruments: [Instrument], initialState state: [Instrument: Set<NoteAtBlock>], numberOfBlocks blocks: Int) {
 		self.instriments = instruments
@@ -14,15 +14,19 @@ class BitMusicMaker: UIView {
 
 		let sequencerViewsWidth = CGFloat(blocks + 1) * Metrics.blockSize
 		let sequencerViewsHeight = CGFloat(Note.allValues.count + 1) * Metrics.blockSize
-		sequencerViews = instruments.map { instrument in
-			return SequenceView(instrument: instrument, blocks: blocks, initialState: state[instrument])
+
+		var sequencerViews = [Instrument: SequencerView]()
+		instruments.forEach { instrument in
+			sequencerViews[instrument] = SequencerView(instrument: instrument, blocks: blocks)
 		}
+		self.sequencerViews = sequencerViews
 
 		let width = sequencerViewsWidth + Metrics.blockSize * 2
 		let height = sequencerViewsHeight * CGFloat(sequencerViews.count) + CGFloat(sequencerViews.count + 1) * Metrics.blockSize
 
 		super.init(frame: CGRect(x: 0, y: 0, width: width, height: height))
 		setupViews(sequencerViewsWidth: sequencerViewsWidth, sequencerViewsHeight: sequencerViewsHeight)
+		sequencer.delegate = self
 	}
 
 	required init?(coder aDecoder: NSCoder) {
@@ -38,7 +42,7 @@ class BitMusicMaker: UIView {
 	func setupViews(sequencerViewsWidth: CGFloat, sequencerViewsHeight: CGFloat) {
 		backgroundColor = .gray
 
-		let stackView = UIStackView(arrangedSubviews: sequencerViews)
+		let stackView = UIStackView(arrangedSubviews: Array(sequencerViews.values))
 		stackView.frame = CGRect(
 			x: Metrics.blockSize,
 			y: Metrics.blockSize,
@@ -66,38 +70,46 @@ extension BitMusicMaker: SequencerDelegate {
 
 	public func stateChanged(_ state: [Instrument : Set<NoteAtBlock>]) {
 		// render sequenceViews (do diff)
+		for (instrument, state) in state {
+			sequencerViews[instrument]?.highlightNotes(newState: state)
+		}
 	}
 }
 
-class SequenceView: UIView {
+protocol SequencerViewDelegate: class {
+	func noteDrawn(note: Note, block: Int, instrument: Instrument)
+}
+
+class SequencerView: UIView {
 	typealias BlockView = UIView
 
 	let blocks: Int
 	let instrument: Instrument
-	var localState: Set<NoteAtBlock>
+	var localState = Set<NoteAtBlock>()
 	let blockViews: Array<Array<BlockView>>
+
+	weak var delegate: SequencerViewDelegate?
 
 	let defaultBlockColor = UIColor.darkGray
 	let highlightedBlockColor = UIColor.red
 	let blockBorderWidth: CGFloat = 0.5
 
-	init(instrument: Instrument, blocks: Int, initialState state: Set<NoteAtBlock>?) {
+	init(instrument: Instrument, blocks: Int) {
 		self.blocks = blocks
 		self.instrument = instrument
-		localState = state ?? []
 
 		var blockViews = Array<Array<BlockView>>()
-		for heightIndex in 0..<Note.allValues.count {
+		for noteIndex in 0..<Note.allValues.count {
 			blockViews.append([])
-			for widthIndex in 0..<blocks {
-				let blockView = SequenceView.createBlockView(defaultColor: defaultBlockColor, blockBorderWidth: blockBorderWidth)
+			for blockIndex in 0..<blocks {
+				let blockView = SequencerView.createBlockView(defaultColor: defaultBlockColor, blockBorderWidth: blockBorderWidth)
 				blockView.frame = CGRect(
-					x: CGFloat(widthIndex) * Metrics.blockSize + Metrics.blockSize,
-					y: CGFloat(heightIndex) * Metrics.blockSize + Metrics.blockSize,
+					x: CGFloat(blockIndex) * Metrics.blockSize + Metrics.blockSize,
+					y: CGFloat(noteIndex) * Metrics.blockSize + Metrics.blockSize,
 					width: Metrics.blockSize,
 					height: Metrics.blockSize
 				)
-				blockViews[heightIndex].append(blockView)
+				blockViews[noteIndex].append(blockView)
 			}
 		}
 		self.blockViews = blockViews
@@ -127,10 +139,43 @@ class SequenceView: UIView {
 	func setupViews() {
 		isUserInteractionEnabled = true
 
-		for row in blockViews {
-			for blockView in row {
+		for blockRow in blockViews {
+			for blockView in blockRow {
 				addSubview(blockView)
 			}
+		}
+
+		let dragGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleDrag(sender:)))
+		dragGestureRecognizer.minimumPressDuration = 0
+		addGestureRecognizer(dragGestureRecognizer)
+
+		// setup more views
+	}
+
+	func highlightNotes(newState: Set<NoteAtBlock>) {
+		let notesToClear = localState.subtracting(newState)
+		let notesToHighlight = newState.subtracting(localState)
+		for noteToClear in notesToClear {
+			let noteIndex = Note.allValues.index(of: noteToClear.note)!
+			blockViews[noteIndex][noteToClear.block].backgroundColor = defaultBlockColor
+		}
+		for noteToHighlight in notesToHighlight {
+			let noteIndex = Note.allValues.index(of: noteToHighlight.note)!
+			blockViews[noteIndex][noteToHighlight.block].backgroundColor = highlightedBlockColor
+		}
+		localState = newState
+	}
+
+	@objc func handleDrag(sender: UIGestureRecognizer) {
+		switch sender.state {
+		case .began, .changed, .ended:
+			let point = sender.location(in: self)
+			guard point.x - Metrics.blockSize > 0 && point.y - Metrics.blockSize > 0 else { return }
+			let noteIndex = Int((point.y - Metrics.blockSize) / Metrics.blockSize)
+			let blockIndex = Int((point.x - Metrics.blockSize) / Metrics.blockSize)
+			guard let firstBlockRow = blockViews.first, noteIndex < blockViews.count && blockIndex < firstBlockRow.count else { return }
+			delegate?.noteDrawn(note: Note.allValues[noteIndex], block: blockIndex, instrument: instrument)
+		default: break
 		}
 	}
 }
@@ -139,6 +184,23 @@ let bitMusicMaker = BitMusicMaker(
 	with: [.triangle, .square],
 	initialState: [
 		.square: [
+			NoteAtBlock(note: .C2, block: 0),
+			NoteAtBlock(note: .C2, block: 1),
+			NoteAtBlock(note: .G, block: 2),
+			NoteAtBlock(note: .G, block: 3),
+			NoteAtBlock(note: .A, block: 4),
+			NoteAtBlock(note: .A, block: 5),
+			NoteAtBlock(note: .G, block: 6),
+
+			NoteAtBlock(note: .F, block: 8),
+			NoteAtBlock(note: .F, block: 9),
+			NoteAtBlock(note: .E, block: 10),
+			NoteAtBlock(note: .E, block: 11),
+			NoteAtBlock(note: .D, block: 12),
+			NoteAtBlock(note: .D, block: 13),
+			NoteAtBlock(note: .C2, block: 14),
+		],
+		.triangle: [
 			NoteAtBlock(note: .C2, block: 0),
 			NoteAtBlock(note: .C2, block: 1),
 			NoteAtBlock(note: .G, block: 2),

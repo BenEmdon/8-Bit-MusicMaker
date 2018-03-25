@@ -88,6 +88,7 @@ public class Sequencer {
 	public func prepareForPlaying() {
 		engine.prepare()
 		try! engine.start()
+		delegate?.stateChanged(notesAtBlocks)
 	}
 
 	public func hardStop() {
