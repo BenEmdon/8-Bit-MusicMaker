@@ -62,6 +62,9 @@ class BitMusicMaker: UIView {
 extension BitMusicMaker: SequencerDelegate {
 	public func blockChanged(_ block: Int) {
 		// render sequencerViews currentBlock
+		for (_, sequencerView) in sequencerViews {
+			sequencerView.pointToBlock(block)
+		}
 	}
 
 	public func sequencerModeChanged(_ mode: Sequencer.Mode) {
@@ -87,6 +90,7 @@ class SequencerView: UIView {
 	let instrument: Instrument
 	var localState = Set<NoteAtBlock>()
 	let blockViews: Array<Array<BlockView>>
+	let blockPointer: UIView
 
 	weak var delegate: SequencerViewDelegate?
 
@@ -113,6 +117,13 @@ class SequencerView: UIView {
 			}
 		}
 		self.blockViews = blockViews
+
+		blockPointer = UIView(frame: CGRect(
+			x: Metrics.blockSize,
+			y: 0,
+			width: Metrics.blockSize,
+			height: Metrics.blockSize * CGFloat(Note.allValues.count + 1)
+		))
 
 		super.init(frame: CGRect(
 			x: 0,
@@ -149,7 +160,8 @@ class SequencerView: UIView {
 		dragGestureRecognizer.minimumPressDuration = 0
 		addGestureRecognizer(dragGestureRecognizer)
 
-		// setup more views
+		blockPointer.backgroundColor = UIColor.white.withAlphaComponent(0.2)
+		addSubview(blockPointer)
 	}
 
 	func highlightNotes(newState: Set<NoteAtBlock>) {
@@ -178,6 +190,10 @@ class SequencerView: UIView {
 		default: break
 		}
 	}
+
+	func pointToBlock(_ block: Int) {
+		blockPointer.frame.origin.x = CGFloat(block) * Metrics.blockSize + Metrics.blockSize
+	}
 }
 
 let bitMusicMaker = BitMusicMaker(
@@ -201,24 +217,24 @@ let bitMusicMaker = BitMusicMaker(
 			NoteAtBlock(note: .C2, block: 14),
 		],
 		.triangle: [
-			NoteAtBlock(note: .C2, block: 0),
-			NoteAtBlock(note: .C2, block: 1),
-			NoteAtBlock(note: .G, block: 2),
-			NoteAtBlock(note: .G, block: 3),
-			NoteAtBlock(note: .A, block: 4),
-			NoteAtBlock(note: .A, block: 5),
-			NoteAtBlock(note: .G, block: 6),
-
-			NoteAtBlock(note: .F, block: 8),
-			NoteAtBlock(note: .F, block: 9),
-			NoteAtBlock(note: .E, block: 10),
-			NoteAtBlock(note: .E, block: 11),
-			NoteAtBlock(note: .D, block: 12),
-			NoteAtBlock(note: .D, block: 13),
-			NoteAtBlock(note: .C2, block: 14),
+//			NoteAtBlock(note: .C2, block: 0),
+//			NoteAtBlock(note: .C2, block: 1),
+//			NoteAtBlock(note: .G, block: 2),
+//			NoteAtBlock(note: .G, block: 3),
+//			NoteAtBlock(note: .A, block: 4),
+//			NoteAtBlock(note: .A, block: 5),
+//			NoteAtBlock(note: .G, block: 6),
+//
+//			NoteAtBlock(note: .F, block: 8),
+//			NoteAtBlock(note: .F, block: 9),
+//			NoteAtBlock(note: .E, block: 10),
+//			NoteAtBlock(note: .E, block: 11),
+//			NoteAtBlock(note: .D, block: 12),
+//			NoteAtBlock(note: .D, block: 13),
+//			NoteAtBlock(note: .C2, block: 14),
 		]
 	],
-	numberOfBlocks: 16
+	numberOfBlocks: 20
 )
 PlaygroundPage.current.liveView = bitMusicMaker
 
