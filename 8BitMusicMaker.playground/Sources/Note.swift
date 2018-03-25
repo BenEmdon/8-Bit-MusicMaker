@@ -1,13 +1,14 @@
 /// An enum that defines each notes pitch relative to the note C.
 /// This assumes that the provided sound assets are a C note.
 ///
-/// - C: Do
+/// - C2: Do
 /// - D: Re
 /// - E: Mi
 /// - F: Fa
 /// - G: Sol
 /// - A: La
 /// - B: Ti
+/// - C3: Do
 public enum Note: Float {
 	case C2 = 0
 	case D = 10
@@ -26,14 +27,14 @@ public enum Note: Float {
 	/// An array of all the cases.
 	public static var allValues: [Note] {
 		return [
-			.C2,
-			.D,
-			.E,
-			.F,
-			.G,
-			.A,
-			.B,
 			.C3,
+			.B,
+			.A,
+			.G,
+			.F,
+			.E,
+			.D,
+			.C2
 		]
 	}
 }
