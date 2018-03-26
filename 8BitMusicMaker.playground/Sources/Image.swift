@@ -17,4 +17,12 @@ extension UIImage {
 	public convenience init(note: Note) {
 		self.init(named: "note" + note.name)!
 	}
+
+	public convenience init(instrumentForWave instrument: Instrument) {
+		self.init(named: instrument.rawValue + "Wave")!
+	}
+
+	public convenience init(instrumentForTitle instrument: Instrument) {
+		self.init(named: instrument.rawValue + "Title")!
+	}
 }

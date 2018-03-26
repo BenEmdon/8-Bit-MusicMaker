@@ -8,7 +8,7 @@ public class SequencerView: UIView {
 	public typealias BlockView = UIView
 
 	let blocks: Int
-	let instrument: Instrument
+	public let instrument: Instrument
 	var localState = Set<NoteAtBlock>()
 	let blockViews: Array<Array<BlockView>>
 	let blockPointer: UIView

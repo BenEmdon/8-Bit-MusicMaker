@@ -6,8 +6,10 @@ class BitMusicMaker: UIView {
 	let blocks: Int
 	let instriments: [Instrument]
 	let sequencerViews: [Instrument: SequencerView]
+	let sequencerContainers: [UIView]
 	let logo = UIImage(.bitMusicMakerWP)
 	let playStopButton: UIButton
+	let sequencerContainersHeight: CGFloat
 
 	init(with instruments: [Instrument], initialState state: [Instrument: Set<NoteAtBlock>], numberOfBlocks blocks: Int) {
 		// setup state
@@ -21,8 +23,10 @@ class BitMusicMaker: UIView {
 
 		// create sequencerViews
 		var sequencerViews = [Instrument: SequencerView]()
-		instruments.forEach { instrument in
-			sequencerViews[instrument] = SequencerView(instrument: instrument, blocks: blocks)
+		sequencerContainers = instruments.map { instrument in
+			let sequencerView = SequencerView(instrument: instrument, blocks: blocks)
+			sequencerViews[instrument] = sequencerView
+			return BitMusicMaker.sequencerViewContainer(sequencerView: sequencerView)
 		}
 		self.sequencerViews = sequencerViews
 
@@ -35,8 +39,12 @@ class BitMusicMaker: UIView {
 		))
 
 		// determine width and height of self
+		let sequencerContainersHeight = sequencerContainers.reduce(0) { (result, view) -> CGFloat in
+			return result + view.bounds.size.height
+		}
+		self.sequencerContainersHeight = sequencerContainersHeight
 		let width = max(sequencerViewsWidth + Metrics.blockSize * 2, Metrics.blockSize * 3 + logo.size.width + playStopButton.frame.size.width)
-		let height = sequencerViewsHeight * CGFloat(sequencerViews.count) + CGFloat(sequencerViews.count + 1) * Metrics.blockSize + logo.size.height
+		let height = sequencerContainersHeight + CGFloat(sequencerContainers.count + 1) * Metrics.blockSize + logo.size.height
 
 		super.init(frame: CGRect(x: 0, y: 0, width: width, height: height))
 		setupViews(sequencerViewsWidth: sequencerViewsWidth, sequencerViewsHeight: sequencerViewsHeight)
@@ -69,12 +77,12 @@ class BitMusicMaker: UIView {
 		addSubview(playStopButton)
 		playStopButton.addTarget(self, action: #selector(handlePlayStopTouch), for: .touchUpInside)
 
-		let stackView = UIStackView(arrangedSubviews: Array(sequencerViews.values))
+		let stackView = UIStackView(arrangedSubviews: sequencerContainers)
 		stackView.frame = CGRect(
 			x: Metrics.blockSize,
 			y: Metrics.blockSize + logo.size.height,
 			width: sequencerViewsWidth,
-			height: sequencerViewsHeight * CGFloat(sequencerViews.count) + CGFloat(sequencerViews.count - 1) * Metrics.blockSize
+			height: sequencerContainersHeight + CGFloat(sequencerViews.count - 1) * Metrics.blockSize
 		)
 		stackView.axis = .vertical
 		stackView.distribution = .fillEqually
@@ -92,6 +100,34 @@ class BitMusicMaker: UIView {
 		case .stopped:
 			sequencer.start()
 		}
+	}
+
+	static func sequencerViewContainer(sequencerView: SequencerView) -> UIView {
+		let sequenceViewContainer = UIView(frame: CGRect(x: 0, y: 0, width: sequencerView.bounds.size.width, height: sequencerView.bounds.size.height + Metrics.blockSize * 2))
+		let instrumentWaveImage = UIImage(instrumentForWave: sequencerView.instrument)
+		let waveImageView = UIImageView(frame: CGRect(
+			x: 0,
+			y: 0,
+			width: instrumentWaveImage.size.width/2,
+			height: instrumentWaveImage.size.height/2
+		))
+		waveImageView.image = instrumentWaveImage
+
+		let instrumentTitleImage = UIImage(instrumentForTitle: sequencerView.instrument)
+		let titleImageView = UIImageView(frame: CGRect(
+			x: waveImageView.bounds.width + 10,
+			y: 0,
+			width: instrumentTitleImage.size.width/2,
+			height: instrumentTitleImage.size.height/2
+		))
+		titleImageView.image = instrumentTitleImage
+
+		sequenceViewContainer.addSubview(titleImageView)
+		sequenceViewContainer.addSubview(waveImageView)
+		sequenceViewContainer.addSubview(sequencerView)
+		sequencerView.frame.origin.y = instrumentWaveImage.size.height/2
+
+		return sequenceViewContainer
 	}
 }
 
@@ -133,7 +169,7 @@ extension BitMusicMaker: SequencerViewDelegate {
 }
 
 let bitMusicMaker = BitMusicMaker(
-	with: [.triangle, .square],
+	with: [.triangle, .square, .noise],
 	initialState: [
 		.square: [
 			NoteAtBlock(note: .C2, block: 0),
@@ -153,9 +189,11 @@ let bitMusicMaker = BitMusicMaker(
 			NoteAtBlock(note: .C2, block: 14),
 		],
 		.triangle: [
+		],
+		.noise: [
 		]
 	],
-	numberOfBlocks: 20
+	numberOfBlocks: 16
 )
 PlaygroundPage.current.liveView = bitMusicMaker
 
