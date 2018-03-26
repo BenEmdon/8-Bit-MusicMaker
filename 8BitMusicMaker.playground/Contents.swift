@@ -188,6 +188,7 @@ class SequencerView: UIView {
 		blockPointer.backgroundColor = UIColor.white.withAlphaComponent(0.2)
 		let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: Metrics.blockSize, height: Metrics.blockSize))
 		imageView.image = UIImage(Image.sequencerPointer)
+		blockPointer.contentMode = .scaleAspectFit
 		blockPointer.addSubview(imageView)
 		addSubview(blockPointer)
 	}
