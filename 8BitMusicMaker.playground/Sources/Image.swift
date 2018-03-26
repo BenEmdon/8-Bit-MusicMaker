@@ -6,6 +6,7 @@ public enum Image: String {
 	case stopButtonUp
 	case stopButtonDown
 	case sequencerPointer
+	case bitMusicMakerWP
 }
 
 extension UIImage {
@@ -13,7 +14,7 @@ extension UIImage {
 		self.init(named: image.rawValue)!
 	}
 
-	public convenience init(_ note: Note) {
+	public convenience init(note: Note) {
 		self.init(named: "note" + note.name)!
 	}
 }
