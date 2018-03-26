@@ -1,5 +1,6 @@
 /// An enum that defines each notes pitch relative to the note C.
 /// This assumes that the provided sound assets are a C note.
+/// A full octive is 1200 times the pitch.
 ///
 /// - C2: Do
 /// - D: Re
@@ -36,5 +37,27 @@ public enum Note: Float {
 			.D,
 			.C2
 		]
+	}
+
+	/// String name identifying the note.
+	var name: String {
+		switch self {
+		case .A:
+			return "A"
+		case .B:
+			return "B"
+		case .C2:
+			return "C2"
+		case .C3:
+			return "C3"
+		case .D:
+			return "D"
+		case .E:
+			return "E"
+		case .F:
+			return "F"
+		case .G:
+			return "G"
+		}
 	}
 }
