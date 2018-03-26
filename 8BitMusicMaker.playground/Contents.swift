@@ -148,8 +148,7 @@ class SequencerView: UIView {
 
 	weak var delegate: SequencerViewDelegate?
 
-	let defaultBlockColor = UIColor.darkGray
-	let highlightedBlockColor = UIColor.red
+	let defaultBlockColor = UIColor.blockBackgroundColor
 	let blockBorderWidth: CGFloat = 0.5
 
 	init(instrument: Instrument, blocks: Int) {
@@ -196,7 +195,7 @@ class SequencerView: UIView {
 		let blockView = BlockView()
 		blockView.backgroundColor = defaultColor
 		blockView.layer.borderWidth = blockBorderWidth
-		blockView.layer.borderColor = UIColor.lightGray.cgColor
+		blockView.layer.borderColor = UIColor.white.cgColor
 		blockView.isUserInteractionEnabled = false
 		return blockView
 	}
@@ -241,7 +240,7 @@ class SequencerView: UIView {
 		}
 		for noteToHighlight in notesToHighlight {
 			let noteIndex = Note.allValues.index(of: noteToHighlight.note)!
-			blockViews[noteIndex][noteToHighlight.block].backgroundColor = highlightedBlockColor
+			blockViews[noteIndex][noteToHighlight.block].backgroundColor = UIColor.colorFor(note: noteToHighlight.note)
 		}
 		localState = newState
 	}
@@ -277,16 +276,16 @@ let bitMusicMaker = BitMusicMaker(
 
 			NoteAtBlock(note: .F, block: 8),
 			NoteAtBlock(note: .F, block: 9),
-//			NoteAtBlock(note: .E, block: 10),
-//			NoteAtBlock(note: .E, block: 11),
-//			NoteAtBlock(note: .D, block: 12),
-//			NoteAtBlock(note: .D, block: 13),
-//			NoteAtBlock(note: .C2, block: 14),
+			NoteAtBlock(note: .E, block: 10),
+			NoteAtBlock(note: .E, block: 11),
+			NoteAtBlock(note: .D, block: 12),
+			NoteAtBlock(note: .D, block: 13),
+			NoteAtBlock(note: .C2, block: 14),
 		],
 		.triangle: [
 		]
 	],
-	numberOfBlocks: 10
+	numberOfBlocks: 15
 )
 PlaygroundPage.current.liveView = bitMusicMaker
 
