@@ -113,6 +113,9 @@ extension BitMusicMaker: SequencerDelegate {
 			playStopButton.setImage(UIImage(.playButtonUp), for: .normal)
 			playStopButton.setImage(UIImage(.playButtonDown), for: .highlighted)
 		}
+		sequencerViews.forEach { (_, sequencerView) in
+			sequencerView.sequencerMode = mode
+		}
 	}
 
 	public func stateChanged(_ state: [Instrument : Set<NoteAtBlock>]) {
@@ -141,6 +144,7 @@ class SequencerView: UIView {
 	var localState = Set<NoteAtBlock>()
 	let blockViews: Array<Array<BlockView>>
 	let blockPointer: UIView
+	var sequencerMode: Sequencer.Mode = .stopped
 
 	weak var delegate: SequencerViewDelegate?
 
@@ -245,7 +249,7 @@ class SequencerView: UIView {
 	@objc func handleTouch(sender: UIGestureRecognizer) {
 		let point = sender.location(in: self)
 		guard point.x - Metrics.blockSize > 0 && point.y - Metrics.blockSize > 0 else { return }
-		guard !blockPointer.frame.contains(point) else { return }
+		guard !blockPointer.frame.contains(point) || sequencerMode == .stopped else { return }
 		let noteIndex = Int((point.y - Metrics.blockSize) / Metrics.blockSize)
 		let blockIndex = Int((point.x - Metrics.blockSize) / Metrics.blockSize)
 		guard let firstBlockRow = blockViews.first, noteIndex < blockViews.count && blockIndex < firstBlockRow.count else { return }
