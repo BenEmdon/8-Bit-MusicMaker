@@ -4,14 +4,14 @@ import UIKit
 class BitMusicMaker: UIView {
 	let sequencer: Sequencer
 	let blocks: Int
-	let instriments: [Instrument]
+	let instriments: Set<Instrument>
 	let sequencerViews: [Instrument: SequencerView]
 	let sequencerContainers: [UIView]
 	let logo = UIImage(.bitMusicMakerWP)
 	let playStopButton: UIButton
 	let sequencerContainersHeight: CGFloat
 
-	init(with instruments: [Instrument], initialState state: [Instrument: Set<NoteAtBlock>], numberOfBlocks blocks: Int) {
+	init(with instruments: Set<Instrument>, initialState state: [Instrument: Set<NoteAtBlock>], numberOfBlocks blocks: Int) {
 		// setup state
 		self.instriments = instruments
 		self.blocks = blocks
@@ -103,7 +103,12 @@ class BitMusicMaker: UIView {
 	}
 
 	static func sequencerViewContainer(sequencerView: SequencerView) -> UIView {
-		let sequenceViewContainer = UIView(frame: CGRect(x: 0, y: 0, width: sequencerView.bounds.size.width, height: sequencerView.bounds.size.height + Metrics.blockSize * 2))
+		let sequenceViewContainer = UIView(frame: CGRect(
+			x: 0,
+			y: 0,
+			width: sequencerView.bounds.size.width,
+			height: sequencerView.bounds.size.height + Metrics.blockSize * 2
+		))
 		let instrumentWaveImage = UIImage(instrumentForWave: sequencerView.instrument)
 		let waveImageView = UIImageView(frame: CGRect(
 			x: 0,
@@ -189,8 +194,6 @@ let bitMusicMaker = BitMusicMaker(
 			NoteAtBlock(note: .C2, block: 14),
 		],
 		.triangle: [
-		],
-		.noise: [
 		]
 	],
 	numberOfBlocks: 16

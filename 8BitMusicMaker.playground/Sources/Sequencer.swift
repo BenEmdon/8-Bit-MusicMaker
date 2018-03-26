@@ -50,10 +50,15 @@ public class Sequencer {
 
 	public weak var delegate: SequencerDelegate?
 
-	public init(with instruments: [Instrument], initialState state: [Instrument: Set<NoteAtBlock>] = [:], numberOfBlocks blocks: Int) {
-		let buffers = Sequencer.audioBuffers(for: instruments)
+	public init(with instruments: Set<Instrument>, initialState state: [Instrument: Set<NoteAtBlock>] = [:], numberOfBlocks blocks: Int) {
+		let buffers = Sequencer.audioBuffers(for: Array(instruments))
 		players = Sequencer.createPlayers(forBuffers: buffers, engine: engine)
 		notesAtBlocks = state
+		for instrument in instruments {
+			if notesAtBlocks[instrument] == nil {
+				notesAtBlocks[instrument] = []
+			}
+		}
 		self.blocks = blocks
 	}
 
