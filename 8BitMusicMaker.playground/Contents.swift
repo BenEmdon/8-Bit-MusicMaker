@@ -189,6 +189,7 @@ class SequencerView: UIView {
 	@objc func handleTouch(sender: UIGestureRecognizer) {
 		let point = sender.location(in: self)
 		guard point.x - Metrics.blockSize > 0 && point.y - Metrics.blockSize > 0 else { return }
+		guard !blockPointer.frame.contains(point) else { return }
 		let noteIndex = Int((point.y - Metrics.blockSize) / Metrics.blockSize)
 		let blockIndex = Int((point.x - Metrics.blockSize) / Metrics.blockSize)
 		guard let firstBlockRow = blockViews.first, noteIndex < blockViews.count && blockIndex < firstBlockRow.count else { return }

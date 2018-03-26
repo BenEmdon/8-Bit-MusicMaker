@@ -20,7 +20,7 @@ public class PitchedPlayer {
 	}
 
 	public func play() {
-		player.scheduleBuffer(audioBuffer, at: nil, options: .loops)
+		player.scheduleBuffer(audioBuffer, at: nil, options: [])
 		player.play()
 	}
 
