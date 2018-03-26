@@ -11,11 +11,11 @@ class BitMusicMaker: UIView {
 	let playStopButton: UIButton
 	let sequencerContainersHeight: CGFloat
 
-	init(with instruments: Set<Instrument>, initialState state: [Instrument: Set<NoteAtBlock>], numberOfBlocks blocks: Int) {
+	init(with instruments: Set<Instrument>, initialState state: [Instrument: Set<NoteAtBlock>], numberOfBlocks blocks: Int, beatsPerMinute: Double) {
 		// setup state
 		self.instriments = instruments
 		self.blocks = blocks
-		sequencer = Sequencer(with: instruments, initialState: state, numberOfBlocks: blocks)
+		sequencer = Sequencer(with: instruments, initialState: state, numberOfBlocks: blocks, blocksPerSecond: 60/beatsPerMinute)
 
 		// determine sequencerViews width/height
 		let sequencerViewsWidth = CGFloat(blocks + 1) * Metrics.blockSize
@@ -174,29 +174,10 @@ extension BitMusicMaker: SequencerViewDelegate {
 }
 
 let bitMusicMaker = BitMusicMaker(
-	with: [.triangle, .square, .noise],
-	initialState: [
-		.square: [
-			NoteAtBlock(note: .C2, block: 0),
-			NoteAtBlock(note: .C2, block: 1),
-			NoteAtBlock(note: .G, block: 2),
-			NoteAtBlock(note: .G, block: 3),
-			NoteAtBlock(note: .A, block: 4),
-			NoteAtBlock(note: .A, block: 5),
-			NoteAtBlock(note: .G, block: 6),
-
-			NoteAtBlock(note: .F, block: 8),
-			NoteAtBlock(note: .F, block: 9),
-			NoteAtBlock(note: .E, block: 10),
-			NoteAtBlock(note: .E, block: 11),
-			NoteAtBlock(note: .D, block: 12),
-			NoteAtBlock(note: .D, block: 13),
-			NoteAtBlock(note: .C2, block: 14),
-		],
-		.triangle: [
-		]
-	],
-	numberOfBlocks: 16
+	with: [.triangle, .square],
+	initialState: [:],
+	numberOfBlocks: 20,
+	beatsPerMinute: 140
 )
 PlaygroundPage.current.liveView = bitMusicMaker
 

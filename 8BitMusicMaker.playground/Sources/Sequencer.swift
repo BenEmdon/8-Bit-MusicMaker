@@ -38,7 +38,7 @@ public class Sequencer {
 	// Constants
 	let blocks: Int
 
-	//	let blocksPerSecond: DispatchTime = 0.5
+	let blocksPerSecond: Double
 
 	// AVFoundation dependancies
 	private let engine = AVAudioEngine()
@@ -50,7 +50,8 @@ public class Sequencer {
 
 	public weak var delegate: SequencerDelegate?
 
-	public init(with instruments: Set<Instrument>, initialState state: [Instrument: Set<NoteAtBlock>] = [:], numberOfBlocks blocks: Int) {
+	public init(with instruments: Set<Instrument>, initialState state: [Instrument: Set<NoteAtBlock>] = [:], numberOfBlocks blocks: Int, blocksPerSecond: Double) {
+		self.blocksPerSecond = blocksPerSecond
 		let buffers = Sequencer.audioBuffers(for: Array(instruments))
 		players = Sequencer.createPlayers(forBuffers: buffers, engine: engine)
 		notesAtBlocks = state
@@ -121,7 +122,7 @@ public class Sequencer {
 		guard currentMode == .playing else { return }
 		delegate?.blockChanged(newBlock)
 		playNotesForBlock(newBlock)
-		DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
+		DispatchQueue.main.asyncAfter(deadline: .now() + blocksPerSecond) { [weak self] in
 			guard let blocks = self?.blocks else { return }
 			let allButLastBlock = 0..<(blocks - 1)
 			if allButLastBlock.contains(newBlock) {
