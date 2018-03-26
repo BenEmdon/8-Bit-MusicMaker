@@ -27,6 +27,9 @@ class BitMusicMaker: UIView {
 		super.init(frame: CGRect(x: 0, y: 0, width: width, height: height))
 		setupViews(sequencerViewsWidth: sequencerViewsWidth, sequencerViewsHeight: sequencerViewsHeight)
 		sequencer.delegate = self
+		for (_, sequencerView) in sequencerViews {
+			sequencerView.delegate = self
+		}
 	}
 
 	required init?(coder aDecoder: NSCoder) {
@@ -76,6 +79,12 @@ extension BitMusicMaker: SequencerDelegate {
 		for (instrument, state) in state {
 			sequencerViews[instrument]?.highlightNotes(newState: state)
 		}
+	}
+}
+
+extension BitMusicMaker: SequencerViewDelegate {
+	func noteDrawn(note: Note, block: Int, instrument: Instrument) {
+		sequencer.toggleNote(note, onInstrument: instrument, forBlock: block)
 	}
 }
 
@@ -156,8 +165,7 @@ class SequencerView: UIView {
 			}
 		}
 
-		let dragGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleDrag(sender:)))
-		dragGestureRecognizer.minimumPressDuration = 0
+		let dragGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTouch(sender:)))
 		addGestureRecognizer(dragGestureRecognizer)
 
 		blockPointer.backgroundColor = UIColor.white.withAlphaComponent(0.2)
@@ -178,17 +186,13 @@ class SequencerView: UIView {
 		localState = newState
 	}
 
-	@objc func handleDrag(sender: UIGestureRecognizer) {
-		switch sender.state {
-		case .began, .changed, .ended:
-			let point = sender.location(in: self)
-			guard point.x - Metrics.blockSize > 0 && point.y - Metrics.blockSize > 0 else { return }
-			let noteIndex = Int((point.y - Metrics.blockSize) / Metrics.blockSize)
-			let blockIndex = Int((point.x - Metrics.blockSize) / Metrics.blockSize)
-			guard let firstBlockRow = blockViews.first, noteIndex < blockViews.count && blockIndex < firstBlockRow.count else { return }
-			delegate?.noteDrawn(note: Note.allValues[noteIndex], block: blockIndex, instrument: instrument)
-		default: break
-		}
+	@objc func handleTouch(sender: UIGestureRecognizer) {
+		let point = sender.location(in: self)
+		guard point.x - Metrics.blockSize > 0 && point.y - Metrics.blockSize > 0 else { return }
+		let noteIndex = Int((point.y - Metrics.blockSize) / Metrics.blockSize)
+		let blockIndex = Int((point.x - Metrics.blockSize) / Metrics.blockSize)
+		guard let firstBlockRow = blockViews.first, noteIndex < blockViews.count && blockIndex < firstBlockRow.count else { return }
+		delegate?.noteDrawn(note: Note.allValues[noteIndex], block: blockIndex, instrument: instrument)
 	}
 
 	func pointToBlock(_ block: Int) {
@@ -200,21 +204,21 @@ let bitMusicMaker = BitMusicMaker(
 	with: [.triangle, .square],
 	initialState: [
 		.square: [
-			NoteAtBlock(note: .C2, block: 0),
-			NoteAtBlock(note: .C2, block: 1),
-			NoteAtBlock(note: .G, block: 2),
-			NoteAtBlock(note: .G, block: 3),
-			NoteAtBlock(note: .A, block: 4),
-			NoteAtBlock(note: .A, block: 5),
-			NoteAtBlock(note: .G, block: 6),
-
-			NoteAtBlock(note: .F, block: 8),
-			NoteAtBlock(note: .F, block: 9),
-			NoteAtBlock(note: .E, block: 10),
-			NoteAtBlock(note: .E, block: 11),
-			NoteAtBlock(note: .D, block: 12),
-			NoteAtBlock(note: .D, block: 13),
-			NoteAtBlock(note: .C2, block: 14),
+//			NoteAtBlock(note: .C2, block: 0),
+//			NoteAtBlock(note: .C2, block: 1),
+//			NoteAtBlock(note: .G, block: 2),
+//			NoteAtBlock(note: .G, block: 3),
+//			NoteAtBlock(note: .A, block: 4),
+//			NoteAtBlock(note: .A, block: 5),
+//			NoteAtBlock(note: .G, block: 6),
+//
+//			NoteAtBlock(note: .F, block: 8),
+//			NoteAtBlock(note: .F, block: 9),
+//			NoteAtBlock(note: .E, block: 10),
+//			NoteAtBlock(note: .E, block: 11),
+//			NoteAtBlock(note: .D, block: 12),
+//			NoteAtBlock(note: .D, block: 13),
+//			NoteAtBlock(note: .C2, block: 14),
 		],
 		.triangle: [
 //			NoteAtBlock(note: .C2, block: 0),
@@ -234,7 +238,7 @@ let bitMusicMaker = BitMusicMaker(
 //			NoteAtBlock(note: .C2, block: 14),
 		]
 	],
-	numberOfBlocks: 20
+	numberOfBlocks: 10
 )
 PlaygroundPage.current.liveView = bitMusicMaker
 

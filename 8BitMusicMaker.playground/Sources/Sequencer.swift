@@ -157,6 +157,14 @@ public class Sequencer {
 		}
 	}
 
+	public func toggleNote(_ note: Note, onInstrument instrument: Instrument, forBlock block: Int) {
+		if let instrumentBlocks = notesAtBlocks[instrument], instrumentBlocks.contains(NoteAtBlock(note: note, block: block)) {
+			deregisterNote(note, onInstrument: instrument, forBlock: block)
+		} else {
+			registerNote(note, onInstrument: instrument, forBlock: block)
+		}
+	}
+
 	private func playNote(_ note: Note, onInstrument instrument: Instrument) {
 		// simple play a note
 		players[instrument]![note]!.play()
