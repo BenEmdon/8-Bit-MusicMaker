@@ -25,6 +25,7 @@ extension NoteAtBlock: Hashable {
 public protocol SequencerDelegate: class {
 	func blockChanged(_ block: Int)
 	func sequencerModeChanged(_ mode: Sequencer.Mode)
+	func recordingStateChanged(isRecording: Bool)
 	func stateChanged(_ state: [Instrument: Set<NoteAtBlock>])
 }
 
@@ -41,16 +42,18 @@ public class Sequencer {
 	let blocksPerSecond: Double
 
 	// AVFoundation dependancies
-	private let engine = AVAudioEngine()
+	public let engine = AVAudioEngine()
 
 	// Organized state of the sequencer
 	private let players: [Instrument: [Note: PitchedPlayer]]
 	public private(set) var notesAtBlocks: [Instrument: Set<NoteAtBlock>]
 	public private(set) var currentMode: Mode = .stopped
+	public let audioFile: AVAudioFile?
+	public var isRecording = false
 
 	public weak var delegate: SequencerDelegate?
 
-	public init(with instruments: Set<Instrument>, initialState state: [Instrument: Set<NoteAtBlock>] = [:], numberOfBlocks blocks: Int, blocksPerSecond: Double) {
+	public init(with instruments: Set<Instrument>, initialState state: [Instrument: Set<NoteAtBlock>] = [:], numberOfBlocks blocks: Int, blocksPerSecond: Double, saveURL: URL?) {
 		self.blocksPerSecond = blocksPerSecond
 		let buffers = Sequencer.audioBuffers(for: Array(instruments))
 		players = Sequencer.createPlayers(forBuffers: buffers, engine: engine)
@@ -61,6 +64,11 @@ public class Sequencer {
 			}
 		}
 		self.blocks = blocks
+		if let saveURL = saveURL {
+			audioFile = try? AVAudioFile(forWriting: saveURL, settings: [:])
+		} else {
+			audioFile = nil
+		}
 	}
 
 	// MARK: Static dispatched setup functions
@@ -179,5 +187,19 @@ public class Sequencer {
 	private func stopNote(_ note: Note, onInstrument instrument: Instrument) {
 		// simple play a note
 		players[instrument]![note]!.stop()
+	}
+
+	func toggleRecord() {
+		if let audioFile = self.audioFile, isRecording == false {
+			isRecording = true
+			engine.mainMixerNode.installTap(onBus: 0, bufferSize: 4096, format: engine.mainMixerNode.outputFormat(forBus: 0)) { (buffer, _) in
+				try? audioFile.write(from: buffer)
+			}
+		} else {
+			hardStop()
+			engine.mainMixerNode.removeTap(onBus: 0)
+			isRecording = false
+		}
+		delegate?.recordingStateChanged(isRecording: isRecording)
 	}
 }

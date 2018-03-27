@@ -7,6 +7,11 @@ public enum Image: String {
 	case stopButtonDown
 	case sequencerPointer
 	case bitMusicMakerWP
+	case recordButtonUp0
+	case recordButtonUp1
+	case recordButtonUp2
+	case recordButtonUp3
+	case recordButtonDown
 }
 
 extension UIImage {
@@ -24,5 +29,16 @@ extension UIImage {
 
 	public convenience init(instrumentForTitle instrument: Instrument) {
 		self.init(named: instrument.rawValue + "Title")!
+	}
+
+	public static var recordingButton: UIImage {
+		return UIImage.animatedImage(with: [
+			UIImage(.recordButtonUp0),
+			UIImage(.recordButtonUp1),
+			UIImage(.recordButtonUp2),
+			UIImage(.recordButtonUp3),
+			UIImage(.recordButtonUp2),
+			UIImage(.recordButtonUp1),
+			], duration: 1)!
 	}
 }
