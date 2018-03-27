@@ -1,6 +1,5 @@
 import PlaygroundSupport
 import UIKit
-import AVFoundation
 
 let path = playgroundSharedDataDirectory.appendingPathComponent("music.caf")
 
