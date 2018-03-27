@@ -48,7 +48,8 @@ public class Sequencer {
 	private let players: [Instrument: [Note: PitchedPlayer]]
 	public private(set) var notesAtBlocks: [Instrument: Set<NoteAtBlock>]
 	public private(set) var currentMode: Mode = .stopped
-	public let audioFile: AVAudioFile?
+	public let saveURL: URL?
+//	public let audioFile: AVAudioFile?
 	public var isRecording = false
 
 	public weak var delegate: SequencerDelegate?
@@ -64,11 +65,7 @@ public class Sequencer {
 			}
 		}
 		self.blocks = blocks
-		if let saveURL = saveURL {
-			audioFile = try? AVAudioFile(forWriting: saveURL, settings: [:])
-		} else {
-			audioFile = nil
-		}
+		self.saveURL = saveURL
 	}
 
 	// MARK: Static dispatched setup functions
@@ -190,7 +187,7 @@ public class Sequencer {
 	}
 
 	func toggleRecord() {
-		if let audioFile = self.audioFile, isRecording == false {
+		if let saveURL = saveURL, isRecording == false, let audioFile = try? AVAudioFile(forWriting: saveURL, settings: [:]) {
 			isRecording = true
 			engine.mainMixerNode.installTap(onBus: 0, bufferSize: 4096, format: engine.mainMixerNode.outputFormat(forBus: 0)) { (buffer, _) in
 				try? audioFile.write(from: buffer)
