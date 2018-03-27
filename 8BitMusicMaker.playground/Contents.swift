@@ -7,8 +7,10 @@ let path = playgroundSharedDataDirectory.appendingPathComponent("music.caf")
 let bitMusicMaker = BitMusicMaker(
 	with: [.triangle, .square],
 	initialState: [:],
-	numberOfBlocks: 20,
+	numberOfBlocks: 10,
 	beatsPerMinute: 140,
-	saveURL: path
+	saveURL: path,
+	numberOfOctaves: .one
 )
 PlaygroundPage.current.liveView = bitMusicMaker
+

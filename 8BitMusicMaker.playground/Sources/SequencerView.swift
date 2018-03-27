@@ -103,12 +103,14 @@ public class SequencerView: UIView {
 		let notesToClear = localState.subtracting(newState)
 		let notesToHighlight = newState.subtracting(localState)
 		for noteToClear in notesToClear {
-			let noteIndex = Note.allValues.index(of: noteToClear.note)!
-			blockViews[noteIndex][noteToClear.block].backgroundColor = defaultBlockColor
+			if let noteIndex = Note.allValues.index(of: noteToClear.note) {
+				blockViews[noteIndex][noteToClear.block].backgroundColor = defaultBlockColor
+			}
 		}
 		for noteToHighlight in notesToHighlight {
-			let noteIndex = Note.allValues.index(of: noteToHighlight.note)!
-			blockViews[noteIndex][noteToHighlight.block].backgroundColor = UIColor.colorFor(note: noteToHighlight.note)
+			if let noteIndex = Note.allValues.index(of: noteToHighlight.note) {
+				blockViews[noteIndex][noteToHighlight.block].backgroundColor = UIColor.colorFor(note: noteToHighlight.note)
+			}
 		}
 		localState = newState
 	}

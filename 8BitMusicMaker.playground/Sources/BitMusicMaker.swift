@@ -2,7 +2,7 @@ import UIKit
 
 
 public class BitMusicMaker: UIView {
-	let sequencer: Sequencer
+	public let sequencer: Sequencer
 	let blocks: Int
 	let instriments: Set<Instrument>
 	let sequencerViews: [Instrument: SequencerView]
@@ -12,7 +12,12 @@ public class BitMusicMaker: UIView {
 	let recordingButton: UIButton
 	let sequencerContainersHeight: CGFloat
 
-	public init(with instruments: Set<Instrument>, initialState state: [Instrument: Set<NoteAtBlock>], numberOfBlocks blocks: Int, beatsPerMinute: Double, saveURL: URL?) {
+	public init(with instruments: Set<Instrument>, initialState state: [Instrument: Set<NoteAtBlock>], numberOfBlocks blocks: Int, beatsPerMinute: Double, saveURL: URL?, numberOfOctaves: Note.NumberOfOctaves? = nil) {
+		// setup global number of octaves
+		if let numberOfOctaves = numberOfOctaves {
+			Note.numberOfOctaves = numberOfOctaves
+		}
+
 		// setup state
 		self.instriments = instruments
 		self.blocks = blocks

@@ -176,14 +176,14 @@ public class Sequencer {
 		}
 	}
 
-	private func playNote(_ note: Note, onInstrument instrument: Instrument) {
+	public func playNote(_ note: Note, onInstrument instrument: Instrument) {
 		// simple play a note
-		players[instrument]![note]!.play()
+		players[instrument]?[note]?.play()
 	}
 
 	private func stopNote(_ note: Note, onInstrument instrument: Instrument) {
 		// simple play a note
-		players[instrument]![note]!.stop()
+		players[instrument]?[note]?.stop()
 	}
 
 	func toggleRecord() {
