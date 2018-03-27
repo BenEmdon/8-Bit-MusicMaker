@@ -16,6 +16,16 @@ The resources found in this playground were all created by me. I developed the C
 
 # Features:
 ### Instruments:
+8-Bit Music Maker supports 3 different "wave forms" or instruments as I like to refer to them. WHile these are not the only wave forms supported in 8-bit architectures, they were certainly the most popular in 80's videogames. Take a look at the `Instrument` type!
+
+`⌥ + click` it!
+*/
+let instrumentEnum: Instrument
+/*:
 ### Configuration:
+You can configure `BitMusicMaker` with the beats per minute (BPM) and length in blocks of your choice!
+[Gif of different BPM and blocks]()
 ### Recording:
+8-Bit Music maker also allows you to record the music you make!
+To record 
 */
