@@ -7,7 +7,7 @@ extension UIColor {
 
 	public static func colorFor(note: Note) -> UIColor {
 		switch note {
-		case .C2:
+		case .C:
 			return #colorLiteral(red: 0.1489660144, green: 0.4037302732, blue: 0.99575454, alpha: 1)
 		case .D:
 			return #colorLiteral(red: 0.1696922183, green: 0.5537169576, blue: 0.9980440736, alpha: 1)
@@ -21,7 +21,7 @@ extension UIColor {
 			return #colorLiteral(red: 0.7865936756, green: 0.9690931439, blue: 0.9825580716, alpha: 1)
 		case .B:
 			return #colorLiteral(red: 0.9825580716, green: 0.9437431083, blue: 0.8379510083, alpha: 1)
-		case .C3:
+		case .C2:
 			return #colorLiteral(red: 0.9825580716, green: 0.9437431083, blue: 0.3723542463, alpha: 1)
 		}
 	}
