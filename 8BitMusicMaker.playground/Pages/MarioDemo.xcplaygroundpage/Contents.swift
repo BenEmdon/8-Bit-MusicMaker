@@ -34,7 +34,6 @@ let marioTheme: Set<NoteAtBlock> = [
 	NoteAtBlock(note: .A, block: 26),
 ]
 
-
 let bitMusicMaker = BitMusicMaker(
 	with: [.square],
 	initialState: [.square: marioTheme],

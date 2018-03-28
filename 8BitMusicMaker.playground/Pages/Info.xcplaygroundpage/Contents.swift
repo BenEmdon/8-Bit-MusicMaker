@@ -15,17 +15,40 @@ The resources found in this playground were all created by me. I developed the C
 [Ben Emdon 👨‍💻](https://github.com/BenEmdon)
 
 # Features:
-### Instruments:
+## Live Sequencing 🎼:
+Utilizing the powerful `AVAudioEngine`, the 8-Bit Music Maker supports live note sequencing! This means as the Bit Music maker is sequencing you can toggle notes on and off in real time!
+
+![Live Sequencing](LiveSequencing.gif)
+## Instruments 🎹:
 8-Bit Music Maker supports 3 different "wave forms" or instruments as I like to refer to them. WHile these are not the only wave forms supported in 8-bit architectures, they were certainly the most popular in 80's videogames. Take a look at the `Instrument` type!
 
 `⌥ + click` it!
 */
 let instrumentEnum: Instrument
+
 /*:
-### Configuration:
-You can configure `BitMusicMaker` with the beats per minute (BPM) and length in blocks of your choice!
-[Gif of different BPM and blocks]()
-### Recording:
-8-Bit Music maker also allows you to record the music you make!
-To record 
+Go ahead and inspect each of the following images if you'd like an idea what each wave form looks like:
+*/
+import UIKit
+let squareWave = UIImage(instrumentForWave: .square)
+let triangleWave = UIImage(instrumentForWave: .triangle)
+let noiseWave = UIImage(instrumentForWave: .noise)
+/*:
+## Configuration ⚙️:
+You can configure `BitMusicMaker` with the following configurations:
+* beats per minute (BPM)
+* length of sequence in blocks
+* numbner of octaves
+## Recording 🎤:
+8-Bit Music maker also allows you to record the music you make and save it to disk!
+To record hit the record button and make sure you press play on the sequencer:
+
+![Recording](Recording.gif)
+## NOTES ABOUT RECORDING ⚠️
+In order to save your 8-Bit Music you must ensure the following directory exists:
+
+`/Users/{YOUR USER NAME}/Documents/Shared\ Playground\ Data`
+
+---
+[👉 Demo](@next)
 */
