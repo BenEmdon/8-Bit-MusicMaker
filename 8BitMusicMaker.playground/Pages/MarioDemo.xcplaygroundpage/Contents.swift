@@ -42,9 +42,9 @@ let marioTheme: Set<NoteAtBlock> = [
 ]
 
 //: Configuration ⚙️:
-let instruments: [Instrument] = [.square]
+let instruments: Set<Instrument> = [.square]
 let initialState: [Instrument: Set<NoteAtBlock>] = [.square: marioTheme]
-let numberOfBlocksL: Int = 30
+let numberOfBlocks: Int = 30
 let blocksPerSecond: Double = 5.5
 let numberOfOctaves: Note.NumberOfOctaves = .two
 
@@ -55,7 +55,7 @@ let saveURL = playgroundSharedDataDirectory.appendingPathComponent("mario.caf")
 let bitMusicMaker = BitMusicMaker(
 	with: instruments,
 	initialState: initialState,
-	numberOfBlocks: numberOfOctaves,
+	numberOfBlocks: numberOfBlocks,
 	blocksPerSecond: blocksPerSecond,
 	saveURL: saveURL,
 	numberOfOctaves: numberOfOctaves
