@@ -1,15 +1,18 @@
 /*:
 # Mario Demo:
+
 This demo shows off the beginning of the famous 8-Bit Super Mario Theme! Feel free to play around with it!
-[👈 Back to Info](@previous) | [👉 Next Demo](@next)
----
+
+[👈 Back to Info](@previous) |
+[👉 Next Demo](@next)
+
 ### Make sure the assitant editor is selected:
 ![Assitant Editor](AssitantEditor.jpg)
 */
 import PlaygroundSupport
 import UIKit
 
-//: This is the notes to the beginnig of the Super Mario Theme
+//: Here are the notes to the beginnig of the Super Mario Theme:
 let marioTheme: Set<NoteAtBlock> = [
 	NoteAtBlock(note: .D, block: 0),
 	NoteAtBlock(note: .E2, block: 0),
@@ -41,7 +44,7 @@ let marioTheme: Set<NoteAtBlock> = [
 	NoteAtBlock(note: .A, block: 26),
 ]
 
-//: Configuration ⚙️:
+// Configuration ⚙️:
 let instruments: Set<Instrument> = [.square]
 let initialState: [Instrument: Set<NoteAtBlock>] = [.square: marioTheme]
 let numberOfBlocks: Int = 30
@@ -51,7 +54,7 @@ let numberOfOctaves: Note.NumberOfOctaves = .two
 // Path corresponds to `/Users/{YOUR USER NAME}/Documents/Shared\ Playground\ Data`
 let saveURL = playgroundSharedDataDirectory.appendingPathComponent("mario.caf")
 
-//: Create the 8-Bit Music Maker
+// Create the 8-Bit Music Maker
 let bitMusicMaker = BitMusicMaker(
 	with: instruments,
 	initialState: initialState,
@@ -63,4 +66,8 @@ let bitMusicMaker = BitMusicMaker(
 
 // Make the 8-Bit music maker the liveView
 PlaygroundPage.current.liveView = bitMusicMaker
-
+/*:
+---
+[👈 Back to Info](@previous) |
+[👉 Next Demo](@next)
+*/
