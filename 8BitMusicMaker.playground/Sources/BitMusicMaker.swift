@@ -1,5 +1,6 @@
 import UIKit
 
+/// BitMusicMaker is the 8-BitMusicMaker. It's a facade that manages the sequencing of notes and user interation through the UI.
 public class BitMusicMaker: UIView {
 	let sequencer: Sequencer
 	let blocks: Int
@@ -11,6 +12,16 @@ public class BitMusicMaker: UIView {
 	let recordingButton: UIButton
 	let sequencerContainersHeight: CGFloat
 
+	/// BitMusicMaker is the 8-BitMusicMaker.
+	/// It's a facade that manages the sequencing of notes and user interation through the UI.
+	///
+	/// - Parameters:
+	///   - instruments: the set of instruments to add to the sequencer.
+	///   - state: the instruments and their notes to play on startup.
+	///   - blocks: the length of the sequencer in blocks.
+	///   - blocksPerSecond: the speed of the sequencer measured in blocks per second.
+	///   - saveURL: the url to save any recording to.
+	///   - numberOfOctaves: the number of octaves to for the given instruments to add to the sequncer.
 	public init(with instruments: Set<Instrument>, initialState state: [Instrument: Set<NoteAtBlock>], numberOfBlocks blocks: Int, blocksPerSecond: Double, saveURL: URL?, numberOfOctaves: Note.NumberOfOctaves? = nil) {
 		// setup global number of octaves
 		if let numberOfOctaves = numberOfOctaves {

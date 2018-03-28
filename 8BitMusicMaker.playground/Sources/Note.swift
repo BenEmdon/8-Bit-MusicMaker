@@ -10,6 +10,13 @@
 /// - A: La
 /// - B: Ti
 /// - C2: Do
+/// - D2: Re
+/// - E2: Mi
+/// - F2: Fa
+/// - G2: Sol
+/// - A2: La
+/// - B2: Ti
+/// - C3: Do
 public enum Note: Float {
 	case C = 0
 	case D = 10
@@ -27,6 +34,10 @@ public enum Note: Float {
 	case B2 = 115
 	case C3 = 120
 
+	/// Number of octaves specifies how many octaves to add to the sequencer.
+	///
+	/// - one: will yeild notes C to C2.
+	/// - two: will yeild notes C to C3.
 	public enum NumberOfOctaves {
 		case one
 		case two
@@ -38,8 +49,8 @@ public enum Note: Float {
 	var pitchModifier: Float {
 		return self.rawValue * 20
 	}
-	/// An array of all the cases.
 
+	/// An array of all the cases.
 	static var allValues: [Note] {
 		switch Note.numberOfOctaves {
 		case .one:
