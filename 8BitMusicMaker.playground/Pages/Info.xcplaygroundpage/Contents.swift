@@ -15,6 +15,8 @@ The resources found in this playground were all created by me. I developed the C
 [Ben Emdon 👨‍💻](https://github.com/BenEmdon)
 
 # Features:
+![Birds Eye View](BirdsEyeView.png)
+
 ## Live Sequencing 🎼:
 Utilizing the powerful `AVAudioEngine`, the 8-Bit Music Maker supports live note sequencing! This means as the Bit Music maker is sequencing you can toggle notes on and off in real time!
 
