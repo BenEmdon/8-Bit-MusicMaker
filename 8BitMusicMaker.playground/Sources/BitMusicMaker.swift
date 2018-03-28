@@ -1,8 +1,7 @@
 import UIKit
 
-
 public class BitMusicMaker: UIView {
-	public let sequencer: Sequencer
+	let sequencer: Sequencer
 	let blocks: Int
 	let instriments: Set<Instrument>
 	let sequencerViews: [Instrument: SequencerView]
@@ -158,14 +157,14 @@ public class BitMusicMaker: UIView {
 }
 
 extension BitMusicMaker: SequencerDelegate {
-	public func blockChanged(_ block: Int) {
+	func blockChanged(_ block: Int) {
 		// render sequencerViews currentBlock
 		for (_, sequencerView) in sequencerViews {
 			sequencerView.pointToBlock(block)
 		}
 	}
 
-	public func sequencerModeChanged(_ mode: Sequencer.Mode) {
+	func sequencerModeChanged(_ mode: Sequencer.Mode) {
 		// change play/stop button
 		switch mode {
 		case .playing:
@@ -180,14 +179,14 @@ extension BitMusicMaker: SequencerDelegate {
 		}
 	}
 
-	public func stateChanged(_ state: [Instrument : Set<NoteAtBlock>]) {
+	func stateChanged(_ state: [Instrument : Set<NoteAtBlock>]) {
 		// render sequenceViews (do diff)
 		for (instrument, state) in state {
 			sequencerViews[instrument]?.highlightNotes(newState: state)
 		}
 	}
 
-	public func recordingStateChanged(isRecording: Bool) {
+	func recordingStateChanged(isRecording: Bool) {
 		if isRecording {
 			recordingButton.setImage(UIImage.recordingButton, for: .normal)
 		} else {
@@ -197,7 +196,7 @@ extension BitMusicMaker: SequencerDelegate {
 }
 
 extension BitMusicMaker: SequencerViewDelegate {
-	public func noteDrawn(note: Note, block: Int, instrument: Instrument) {
+	func noteDrawn(note: Note, block: Int, instrument: Instrument) {
 		sequencer.toggleNote(note, onInstrument: instrument, forBlock: block)
 	}
 }

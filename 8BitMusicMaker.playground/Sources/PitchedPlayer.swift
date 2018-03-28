@@ -1,13 +1,13 @@
 import Foundation
 import AVFoundation
 
-public class PitchedPlayer {
+class PitchedPlayer {
 
 	let player = AVAudioPlayerNode()
 	let timePitchEffect = AVAudioUnitTimePitch()
 	let audioBuffer: AVAudioPCMBuffer
 
-	public init(engine: AVAudioEngine, audioBuffer: AVAudioPCMBuffer, note: Note) {
+	init(engine: AVAudioEngine, audioBuffer: AVAudioPCMBuffer, note: Note) {
 		self.audioBuffer = audioBuffer
 
 		timePitchEffect.pitch = note.pitchModifier
@@ -19,12 +19,12 @@ public class PitchedPlayer {
 		engine.connect(timePitchEffect, to: engine.mainMixerNode, format: audioBuffer.format)
 	}
 
-	public func play() {
+	func play() {
 		player.scheduleBuffer(audioBuffer, at: nil, options: [])
 		player.play()
 	}
 
-	public func stop() {
+	func stop() {
 		player.stop()
 	}
 }

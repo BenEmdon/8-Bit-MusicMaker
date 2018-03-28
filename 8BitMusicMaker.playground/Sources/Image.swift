@@ -15,11 +15,11 @@ public enum Image: String {
 }
 
 extension UIImage {
-	public convenience init(_ image: Image) {
+	convenience init(_ image: Image) {
 		self.init(named: image.rawValue)!
 	}
 
-	public convenience init(note: Note) {
+	convenience init(note: Note) {
 		self.init(named: "note" + note.name)!
 	}
 
@@ -27,7 +27,7 @@ extension UIImage {
 		self.init(named: instrument.rawValue + "Wave")!
 	}
 
-	public convenience init(instrumentForTitle instrument: Instrument) {
+	convenience init(instrumentForTitle instrument: Instrument) {
 		self.init(named: instrument.rawValue + "Title")!
 	}
 

@@ -1,11 +1,11 @@
 import UIKit
 
 extension UIColor {
-	public static let backgroundColor = #colorLiteral(red: 0.2467072606, green: 0.2543253303, blue: 0.2875217199, alpha: 1)
-	public static let blockBackgroundColor = #colorLiteral(red: 0.1563676894, green: 0.1678637564, blue: 0.2093632221, alpha: 1)
-	public static let pink = #colorLiteral(red: 0.9984274507, green: 0.2404478788, blue: 0.6934666634, alpha: 1)
+	static let backgroundColor = #colorLiteral(red: 0.2467072606, green: 0.2543253303, blue: 0.2875217199, alpha: 1)
+	static let blockBackgroundColor = #colorLiteral(red: 0.1563676894, green: 0.1678637564, blue: 0.2093632221, alpha: 1)
+	static let pink = #colorLiteral(red: 0.9984274507, green: 0.2404478788, blue: 0.6934666634, alpha: 1)
 
-	public static func colorFor(note: Note) -> UIColor {
+	static func colorFor(note: Note) -> UIColor {
 		switch note {
 		case .C, .C3:
 			return #colorLiteral(red: 0.1489660144, green: 0.4037302732, blue: 0.99575454, alpha: 1)

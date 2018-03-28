@@ -14,7 +14,7 @@ public enum Instrument: String {
 
 	/// An audio file of an instrument playing a C.
 	/// Assumes the audio file is in the project bundle.
-	public var sample: AVAudioFile {
+	var sample: AVAudioFile {
 		let url = Bundle.main.url(forResource: "8-bit-" + rawValue + "C", withExtension: "mp3")!
 		return try! AVAudioFile(forReading: url)
 	}

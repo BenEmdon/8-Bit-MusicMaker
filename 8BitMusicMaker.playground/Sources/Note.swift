@@ -35,12 +35,12 @@ public enum Note: Float {
 	internal static var numberOfOctaves: NumberOfOctaves = .one
 
 	/// The `pitchModifier` is the amount by which the input signal (C note) is modified.
-	public var pitchModifier: Float {
+	var pitchModifier: Float {
 		return self.rawValue * 20
 	}
 	/// An array of all the cases.
 
-	public static var allValues: [Note] {
+	static var allValues: [Note] {
 		switch Note.numberOfOctaves {
 		case .one:
 			return [

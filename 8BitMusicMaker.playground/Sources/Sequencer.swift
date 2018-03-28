@@ -1,16 +1,6 @@
 import AVFoundation
 import Foundation
 
-public struct NoteAtBlock {
-	public let note: Note
-	public let block: Int
-	
-	public init(note: Note, block: Int) {
-		self.note = note
-		self.block = block
-	}
-}
-
 extension NoteAtBlock: Hashable {
 	public static func ==(lhs: NoteAtBlock, rhs: NoteAtBlock) -> Bool {
 		return lhs.block == rhs.block
@@ -22,14 +12,14 @@ extension NoteAtBlock: Hashable {
 	}
 }
 
-public protocol SequencerDelegate: class {
+protocol SequencerDelegate: class {
 	func blockChanged(_ block: Int)
 	func sequencerModeChanged(_ mode: Sequencer.Mode)
 	func recordingStateChanged(isRecording: Bool)
 	func stateChanged(_ state: [Instrument: Set<NoteAtBlock>])
 }
 
-public class Sequencer {
+class Sequencer {
 
 	public enum Mode {
 		case playing
@@ -46,15 +36,14 @@ public class Sequencer {
 
 	// Organized state of the sequencer
 	private let players: [Instrument: [Note: PitchedPlayer]]
-	public private(set) var notesAtBlocks: [Instrument: Set<NoteAtBlock>]
-	public private(set) var currentMode: Mode = .stopped
-	public let saveURL: URL?
-//	public let audioFile: AVAudioFile?
-	public var isRecording = false
+	private(set) var notesAtBlocks: [Instrument: Set<NoteAtBlock>]
+	private(set) var currentMode: Mode = .stopped
+	let saveURL: URL?
+	var isRecording = false
 
-	public weak var delegate: SequencerDelegate?
+	weak var delegate: SequencerDelegate?
 
-	public init(with instruments: Set<Instrument>, initialState state: [Instrument: Set<NoteAtBlock>] = [:], numberOfBlocks blocks: Int, blocksPerSecond: Double, saveURL: URL?) {
+	init(with instruments: Set<Instrument>, initialState state: [Instrument: Set<NoteAtBlock>] = [:], numberOfBlocks blocks: Int, blocksPerSecond: Double, saveURL: URL?) {
 		self.blocksPerSecond = blocksPerSecond
 		let buffers = Sequencer.audioBuffers(for: Array(instruments))
 		players = Sequencer.createPlayers(forBuffers: buffers, engine: engine)
@@ -96,25 +85,24 @@ public class Sequencer {
 
 	// MARK: Sequencer behavior
 
-	public func prepareForPlaying() {
+	func prepareForPlaying() {
 		engine.prepare()
 		try! engine.start()
 		delegate?.stateChanged(notesAtBlocks)
 	}
 
-	public func hardStop() {
+	func hardStop() {
 		currentMode = .stopped
 		for (instrument, notesAtBlocks) in notesAtBlocks {
 			let notesInBlock = notesAtBlocks
 				.map { noteAtBlock in noteAtBlock.note }
-			print(notesInBlock)
 			notesInBlock.forEach { note in stopNote(note, onInstrument: instrument) }
 		}
 		delegate?.sequencerModeChanged(currentMode)
 		delegate?.blockChanged(0)
 	}
 
-	public func start() {
+	func start() {
 		currentMode = .playing
 		delegate?.sequencerModeChanged(currentMode)
 		sequenceNotes(forNewBlock: 0, oldBlock: nil)
@@ -157,18 +145,18 @@ public class Sequencer {
 		}
 	}
 
-	public func registerNote(_ note: Note, onInstrument instrument: Instrument, forBlock block: Int) {
+	func registerNote(_ note: Note, onInstrument instrument: Instrument, forBlock block: Int) {
 		notesAtBlocks[instrument]?.insert(NoteAtBlock(note: note, block: block))
 		delegate?.stateChanged(notesAtBlocks)
 	}
 
-	public func deregisterNote(_ note: Note, onInstrument instrument: Instrument, forBlock block: Int) {
+	func deregisterNote(_ note: Note, onInstrument instrument: Instrument, forBlock block: Int) {
 		if let _ = notesAtBlocks[instrument]?.remove(NoteAtBlock(note: note, block: block)) {
 			delegate?.stateChanged(notesAtBlocks)
 		}
 	}
 
-	public func toggleNote(_ note: Note, onInstrument instrument: Instrument, forBlock block: Int) {
+	func toggleNote(_ note: Note, onInstrument instrument: Instrument, forBlock block: Int) {
 		if let instrumentBlocks = notesAtBlocks[instrument], instrumentBlocks.contains(NoteAtBlock(note: note, block: block)) {
 			deregisterNote(note, onInstrument: instrument, forBlock: block)
 		} else {
@@ -176,7 +164,7 @@ public class Sequencer {
 		}
 	}
 
-	public func playNote(_ note: Note, onInstrument instrument: Instrument) {
+	func playNote(_ note: Note, onInstrument instrument: Instrument) {
 		// simple play a note
 		players[instrument]?[note]?.play()
 	}

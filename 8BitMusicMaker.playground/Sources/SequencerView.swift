@@ -1,25 +1,25 @@
 import UIKit
 
-public protocol SequencerViewDelegate: class {
+protocol SequencerViewDelegate: class {
 	func noteDrawn(note: Note, block: Int, instrument: Instrument)
 }
 
-public class SequencerView: UIView {
-	public typealias BlockView = UIView
+class SequencerView: UIView {
+	typealias BlockView = UIView
 
 	let blocks: Int
-	public let instrument: Instrument
+	let instrument: Instrument
 	var localState = Set<NoteAtBlock>()
 	let blockViews: Array<Array<BlockView>>
 	let blockPointer: UIView
-	public var sequencerMode: Sequencer.Mode = .stopped
+	var sequencerMode: Sequencer.Mode = .stopped
 
-	public weak var delegate: SequencerViewDelegate?
+	weak var delegate: SequencerViewDelegate?
 
 	let defaultBlockColor = UIColor.blockBackgroundColor
 	let blockBorderWidth: CGFloat = 0.5
 
-	public init(instrument: Instrument, blocks: Int) {
+	init(instrument: Instrument, blocks: Int) {
 		self.blocks = blocks
 		self.instrument = instrument
 
@@ -55,7 +55,7 @@ public class SequencerView: UIView {
 		setupViews()
 	}
 
-	public required init?(coder aDecoder: NSCoder) {
+	required init?(coder aDecoder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
 
@@ -99,7 +99,7 @@ public class SequencerView: UIView {
 		addSubview(blockPointer)
 	}
 
-	public func highlightNotes(newState: Set<NoteAtBlock>) {
+	func highlightNotes(newState: Set<NoteAtBlock>) {
 		let notesToClear = localState.subtracting(newState)
 		let notesToHighlight = newState.subtracting(localState)
 		for noteToClear in notesToClear {
@@ -125,7 +125,7 @@ public class SequencerView: UIView {
 		delegate?.noteDrawn(note: Note.allValues[noteIndex], block: blockIndex, instrument: instrument)
 	}
 
-	public func pointToBlock(_ block: Int) {
+	func pointToBlock(_ block: Int) {
 		UIView.animate(withDuration: 0.1) { [weak self] in
 			self?.blockPointer.frame.origin.x = CGFloat(block) * Metrics.blockSize + Metrics.blockSize
 		}
