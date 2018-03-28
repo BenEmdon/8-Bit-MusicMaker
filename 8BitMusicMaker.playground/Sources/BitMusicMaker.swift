@@ -12,7 +12,7 @@ public class BitMusicMaker: UIView {
 	let recordingButton: UIButton
 	let sequencerContainersHeight: CGFloat
 
-	public init(with instruments: Set<Instrument>, initialState state: [Instrument: Set<NoteAtBlock>], numberOfBlocks blocks: Int, beatsPerMinute: Double, saveURL: URL?, numberOfOctaves: Note.NumberOfOctaves? = nil) {
+	public init(with instruments: Set<Instrument>, initialState state: [Instrument: Set<NoteAtBlock>], numberOfBlocks blocks: Int, blocksPerSecond: Double, saveURL: URL?, numberOfOctaves: Note.NumberOfOctaves? = nil) {
 		// setup global number of octaves
 		if let numberOfOctaves = numberOfOctaves {
 			Note.numberOfOctaves = numberOfOctaves
@@ -21,7 +21,7 @@ public class BitMusicMaker: UIView {
 		// setup state
 		self.instriments = instruments
 		self.blocks = blocks
-		sequencer = Sequencer(with: instruments, initialState: state, numberOfBlocks: blocks, blocksPerSecond: 60/beatsPerMinute, saveURL: saveURL)
+		sequencer = Sequencer(with: instruments, initialState: state, numberOfBlocks: blocks, blocksPerSecond: 1/blocksPerSecond, saveURL: saveURL)
 
 		// determine sequencerViews width/height
 		let sequencerViewsWidth = CGFloat(blocks + 1) * Metrics.blockSize

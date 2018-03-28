@@ -36,9 +36,9 @@ let noiseWave = UIImage(instrumentForWave: .noise)
 /*:
 ## Configuration ⚙️:
 You can configure `BitMusicMaker` with the following configurations:
-* beats per minute (BPM)
-* length of sequence in blocks
-* number of octaves
+* `blocksPerSecond`: the number of blocks sequenced per second
+* `numberOfBlocks`: length of sequence in blocks
+* `numberOfOctaves`: number of octaves
 ## Recording 🎤:
 8-Bit Music maker also allows you to record the music you make and save it to disk!
 To record, hit the record button and make sure you press play on the sequencer:
