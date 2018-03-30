@@ -1,5 +1,5 @@
 /*:
-![title](8BitMusicMakerWhiteAndPinkBig.png)
+![title](8BitMusicMakerWhiteAndPinkAndBig.png)
 [👉 Demo](@next)
 
 # About:
