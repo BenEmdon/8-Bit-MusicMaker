@@ -1,5 +1,7 @@
 ![title](.github/8BitMusicMakerWhiteAndPinkAndBig.png)
 
+[![WWDC](https://img.shields.io/badge/WWDC%20Scholarship-Winner-4099FF.svg)](https://developer.apple.com/wwdc)
+
 # About:
 Feel nostalgic when you hear an old video game's music? If so, 8-Bit Music Maker is here to let you re-live those memories! It's packed with 8-Bit sounds from the past, and filled with endless possibilities of songs (some creativity required)! This playground is the perfect place to be creative, and bring out your inner child.
 
