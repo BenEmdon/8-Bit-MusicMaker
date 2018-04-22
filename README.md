@@ -24,16 +24,18 @@ Utilizing the powerful `AVAudioEngine`, the 8-Bit Music Maker supports live note
 ## Instruments 🎹:
 8-Bit Music Maker supports 3 different "wave forms", or "instruments", as I like to refer to them. While these are not the only wave forms supported in 8-bit architectures, they were certainly the most popular in 80's video games.
 
-## Configuration ⚙️:
-You can configure `BitMusicMaker` with the following configurations:
-* `blocksPerSecond`: the number of blocks sequenced per second
-* `numberOfBlocks`: length of sequence in blocks
-* `numberOfOctaves`: number of octaves
 ## Recording 🎤:
 8-Bit Music maker also allows you to record the music you make and save it to disk!
 To record, hit the record button and make sure you press play on the sequencer:
 
 ![Recording](.github/Recording.gif)
+
+## Configuration ⚙️:
+You can configure `BitMusicMaker` with the following configurations:
+* `blocksPerSecond`: the number of blocks sequenced per second
+* `numberOfBlocks`: length of sequence in blocks
+* `numberOfOctaves`: number of octaves
+
 ## NOTES ABOUT RECORDING ⚠️
 In order to save your 8-Bit Music, you must ensure the following directory exists:
 
